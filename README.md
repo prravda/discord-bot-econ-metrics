@@ -1,5 +1,8 @@
 # discord-bot-econ-metrics
-A discord bot for getting economical metrics
+경제 통계 수집을 한 뒤, discord 로 해당 정보를 보내는 Bot 입니다.
+
+# Information
+- `Python`: 3.9
 
 # Caution
-- The library `PublicDataReader` should use python version < 3.10, because of security issue after python 
+- `PublicDataReader` 라이브러리의 경우 python version 이  3.10 미만 이어야 합니다.

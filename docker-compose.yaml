@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: db
+    hostname: db
+    image: mariadb:10.6
+    restart: always
+    volumes:
+      - ./infra/database/init:/docker-entrypoint-initdb.d
+    env_file:
+      - .env
+    environment:
+      MYSQL_USER: "${DATABASE_USERNAME}"
+      MYSQL_PASSWORD: "${DATABASE_PASSWORD}"
+      MARIADB_ROOT_PASSWORD: "${DATABASE_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${DATABASE_NAME}"
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    networks:
+      - bot
+
+  discord-bot:
+    container_name: discord-bot
+    hostname: discord-bot
+    restart: always
+    depends_on:
+      - db
+    build:
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    networks:
+      - bot
+
+networks:
+  bot:
+    name: bot
+    driver: bridge
+

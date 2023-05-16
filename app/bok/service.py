@@ -32,6 +32,19 @@ class BokService:
         plt.ylabel('GDP(10억원)')
         plt.savefig('KoreanBank_GDP.png')
 
+    def polling_gdp(self) -> None:
+        """
+        한국은행 GDP 정보를 일정 간격마다 호출하는 함수입니다.
+        :return: None
+        """
+
+    def is_there_updated_gdp(self) -> bool:
+        """
+        한국은행 정보 중, 호출 시점을 기준으로 GDP 정보가 존재하는지 여부를 반환합니다.
+        :return:
+        """
+
+
 
 instance = BokService()
 instance.get_gdp()
