@@ -1,25 +1,15 @@
-from PublicDataReader import Ecos
-import pandas as pd
-import numpy as np
+from app.data_reader.abstracts.AbstractBokDataReader import AbstractBokDataReader
+from app.data_reader.concretes.BokDataReader import BokDataReader
+
 import matplotlib.pyplot as plt
-from matplotlib import font_manager, rc
-from app.configuration.environments import ENV_VARIABLES
 
 
 class BokService:
-    def __int__(self):
-        pass
+    def __init__(self, reader: AbstractBokDataReader):
+        self.__reader = reader
 
-    def get_gdp(self):
-        print(ENV_VARIABLES["AUTHOR_KEY"])
-        api = Ecos(ENV_VARIABLES["AUTHOR_KEY"])
-
-        df_gdp = api.get_statistic_search(
-            통계표코드='200Y005',
-            주기='A',
-            검색시작일자='2015',
-            검색종료일자='2022',
-        )
+    def get_gdp(self, from_str: str, to_str: str, period: str):
+        df_gdp = self.__reader.get_gdp_by_range(from_str, to_str, period)
 
         gdp_year = df_gdp[df_gdp['통계항목명1'] == '국내총생산(시장가격, GDP)']
         gdp_year = gdp_year[['시점', '값']]
@@ -45,6 +35,6 @@ class BokService:
         """
 
 
-
-instance = BokService()
-instance.get_gdp()
+concrete_reader = BokDataReader()
+instance = BokService(concrete_reader)
+instance.get_gdp('2015', '2022', 'A')

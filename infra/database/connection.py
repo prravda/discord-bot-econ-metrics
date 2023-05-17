@@ -39,6 +39,9 @@ Base.metadata.create_all(engine)
 session = Session()
 
 
+# TODO: implement data model using sqlalchemy
+# TODO: implement connection and session management object using sqlalchemy
+
 def test():
     # Insert a record using the query builder
     user = User(name='John Doe', email='john@example.com')
