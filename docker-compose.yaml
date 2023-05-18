@@ -7,6 +7,7 @@ services:
     image: mariadb:10.6
     restart: always
     volumes:
+      - bot-storage:/var/lib/mysql
       - ./infra/database/init:/docker-entrypoint-initdb.d
     env_file:
       - .env
@@ -37,4 +38,7 @@ networks:
   bot:
     name: bot
     driver: bridge
+
+volumes:
+  bot-storage:
 

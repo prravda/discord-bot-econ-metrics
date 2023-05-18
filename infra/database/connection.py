@@ -6,13 +6,15 @@ from sqlalchemy.orm import Session
 from infra.database.alchemy_models.Base import Base
 
 # Call alchemy models inherit the Base class
-from infra.database.alchemy_models.RokGdp import RokGdp
+from infra.database.alchemy_models.RokGdpSource import RokGdpSource
+from infra.database.alchemy_models.RokGdpTarget import RokGdpTarget
 
 
 class SessionManager:
     def __init__(self):
         self.__session: Optional[Session] = None
 
+    def get_session(self):
         if self.__session is None:
             url_object = URL.create(
                 'mariadb+mariadbconnector',
@@ -32,5 +34,4 @@ class SessionManager:
             # Create a session factory
             self.__session = Session(bind=engine)
 
-    def get_session(self):
         return self.__session

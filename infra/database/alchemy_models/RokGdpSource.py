@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy.sql import func
 from infra.database.alchemy_models.Base import Base
 
 
-class RokGdp(Base):
-    __tablename__ = 'gdp'
+class RokGdpSource(Base):
+    __tablename__ = 'rok_gdp_source'
 
     id = Column(Integer, primary_key=True)
     stat_code = Column(String(50))
@@ -26,6 +27,8 @@ class RokGdp(Base):
     raw_time = Column(String(50))
 
     data_value = Column(Float)
+
+    created_at = Column(DateTime, server_default=func.now())
 
     def __repr__(self) -> str:
         return f'id = {self.id}, status_code = {self.stat_code}, ' \

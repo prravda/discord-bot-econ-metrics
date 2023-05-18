@@ -6,8 +6,6 @@ from discord.ext import tasks
 
 from app.data_reader.concretes.BokDataReader import BokDataReader
 
-from datetime import datetime
-
 from infra.database.connection import SessionManager
 
 # init database
@@ -21,22 +19,33 @@ bot = discord.Bot()
 concrete_reader = BokDataReader()
 instance = BokService(concrete_reader)
 
+# when the program was started
+# fill the database at first
+instance.fill_base_data_to_source_and_target()
 
-@tasks.loop(hours=24)
-async def check_updated_annual_gdp_periodically():
-    if instance.check_updated_value():
-        channel = bot.get_channel(1052239870912893011)
-        await channel.send(f'{datetime.now()} 기준 갱신된 GDP data 가 있어요!')
+
+@tasks.loop(hours=24*7)
+async def check_updated_gdp_periodically():
+    data_fetched = instance.update_source()
+    if data_fetched:
+        data_updated = instance.update_target_from_source()
+        if data_updated:
+            channel = bot.get_channel(ENV_VARIABLES['DISCORD_CHANNEL_ID'])
+            await channel.send('GDP 가 갱신되었습니다!')
 
 
 @bot.event
 async def on_ready():
     print(f"{bot.user} is ready and online!")
-    check_updated_annual_gdp_periodically.start()
+    if not check_updated_gdp_periodically.is_running():
+        check_updated_gdp_periodically.start()
 
 
-@bot.slash_command(name="gdp_graph", description="연간 기준 GDP 그래프를 그려줍니다!, 시작년과 종료년을 `,` 로 구분해서 입력해주세요(ex. 2014, 2023)!",
-                   guild_ids=[1052239870912893008])
+@bot.slash_command(
+    name="gdp_graph",
+    description="연간 기준 GDP 그래프를 그려줍니다!, 시작년과 종료년을 `,` 로 구분해서 입력해주세요(ex. 2014, 2023)!",
+    guild_ids=[ENV_VARIABLES['DISCORD_GUILD_ID']]
+)
 async def gdp_graph(ctx, value):
     from_year, to_year = list(map(lambda year: str(year).strip(), value.split(',')))
     data = instance.get_gdp_by_range(from_year, to_year, 'A')
