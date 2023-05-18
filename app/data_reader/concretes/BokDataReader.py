@@ -27,6 +27,7 @@ class BokDataReader(AbstractBokDataReader):
                 주기=period,
                 검색시작일자=from_str,
                 검색종료일자=to_str,
+                translate=False
             )
 
             # TODO: If there are any error message, contain this error instance
